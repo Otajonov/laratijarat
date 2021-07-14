@@ -36,7 +36,7 @@ class LaravelchkController extends Controller
                 }
                 return redirect(base64_decode('aHR0cHM6Ly82YW10ZWNoLmNvbS9zb2Z0d2FyZS1hY3RpdmF0aW9u'));
             } catch (\Exception $exception) {
-                return redirect()->route(base64_decode('c3RlcDM='));//s3
+                return redirect(base64_decode('aHR0cHM6Ly82YW10ZWNoLmNvbS9zb2Z0d2FyZS1hY3RpdmF0aW9u'));
             }
         }
     }
@@ -65,7 +65,7 @@ class LaravelchkController extends Controller
                 ]);
             } catch (\Exception $exception) {
                 return response()->json([
-                    'active' => 1
+                    'active' => 0
                 ]);
             }
         }
