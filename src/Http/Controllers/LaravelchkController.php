@@ -27,14 +27,20 @@ class LaravelchkController extends Controller
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
                 $response = curl_exec($ch);
+                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
 
-                if (base64_decode(json_decode($response, true)['active'])) {
-                    session()->put(base64_decode('cHVyY2hhc2Vfa2V5'), $request[base64_decode('cHVyY2hhc2Vfa2V5')]);//pk
-                    session()->put(base64_decode('dXNlcm5hbWU='), $request[base64_decode('dXNlcm5hbWU=')]);//un
+                if ($code === 404 || $code === 500) {
                     return redirect()->route(base64_decode('c3RlcDM='));//s3
+                } else {
+                    if (isset(json_decode($response, true)['active']) && base64_decode(json_decode($response, true)['active'])) {
+                        session()->put(base64_decode('cHVyY2hhc2Vfa2V5'), $request[base64_decode('cHVyY2hhc2Vfa2V5')]);//pk
+                        session()->put(base64_decode('dXNlcm5hbWU='), $request[base64_decode('dXNlcm5hbWU=')]);//un
+                        return redirect()->route(base64_decode('c3RlcDM='));//s3
+                    } else {
+                        return redirect(base64_decode('aHR0cHM6Ly82YW10ZWNoLmNvbS9zb2Z0d2FyZS1hY3RpdmF0aW9u'));
+                    }
                 }
-                return redirect(base64_decode('aHR0cHM6Ly82YW10ZWNoLmNvbS9zb2Z0d2FyZS1hY3RpdmF0aW9u'));
             } catch (\Exception $exception) {
                 return redirect(base64_decode('aHR0cHM6Ly82YW10ZWNoLmNvbS9zb2Z0d2FyZS1hY3RpdmF0aW9u'));
             }
@@ -59,10 +65,24 @@ class LaravelchkController extends Controller
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                 curl_setopt($ch, CURLOPT_POSTFIELDS, $post);
                 $response = curl_exec($ch);
+                $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
                 curl_close($ch);
-                return response()->json([
-                    'active' => base64_decode(json_decode($response, true)['active'])
-                ]);
+
+                if ($code === 404 || $code === 500) {
+                    return response()->json([
+                        'active' => 1
+                    ]);
+                } else {
+                    if (isset(json_decode($response, true)['active'])) {
+                        return response()->json([
+                            'active' => (int)base64_decode(json_decode($response, true)['active'])
+                        ]);
+                    } else {
+                        return response()->json([
+                            'active' => 0
+                        ]);
+                    }
+                }
             } catch (\Exception $exception) {
                 return response()->json([
                     'active' => 0
