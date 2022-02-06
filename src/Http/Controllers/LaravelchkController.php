@@ -15,11 +15,14 @@ class LaravelchkController extends Controller
             session()->put(base64_decode('dXNlcm5hbWU='), $request[base64_decode('dXNlcm5hbWU=')]);//un
             return redirect()->route(base64_decode('c3RlcDM='));//s3
         } else {
+            $remove = array("http://","https://","www.");
+            $url= str_replace($remove,"",url('/'));
+
             $post = [
                 base64_decode('dXNlcm5hbWU=') => $request[base64_decode('dXNlcm5hbWU=')],//un
                 base64_decode('cHVyY2hhc2Vfa2V5') => $request[base64_decode('cHVyY2hhc2Vfa2V5')],//pk
                 base64_decode('c29mdHdhcmVfaWQ=') => base64_decode(env(base64_decode('U09GVFdBUkVfSUQ='))),//sid
-                base64_decode('ZG9tYWlu') => preg_replace("#^[^:/.]*[:/]+#i", "", url('/')),
+                base64_decode('ZG9tYWlu') => $url
             ];
 
             try {
@@ -52,11 +55,14 @@ class LaravelchkController extends Controller
                 'active' => 1
             ]);
         } else {
+            $remove = array("http://","https://","www.");
+            $url= str_replace($remove,"",url('/'));
+
             $post = [
                 base64_decode('dXNlcm5hbWU=') => env(base64_decode('QlVZRVJfVVNFUk5BTUU=')),//un
                 base64_decode('cHVyY2hhc2Vfa2V5') => env(base64_decode('UFVSQ0hBU0VfQ09ERQ==')),//pk
                 base64_decode('c29mdHdhcmVfaWQ=') => base64_decode(env(base64_decode('U09GVFdBUkVfSUQ='))),//sid
-                base64_decode('ZG9tYWlu') => preg_replace("#^[^:/.]*[:/]+#i", "", url('/')),
+                base64_decode('ZG9tYWlu') => $url,
             ];
             try {
                 $ch = curl_init(base64_decode('aHR0cHM6Ly9jaGVjay42YW10ZWNoLmNvbS9hcGkvdjEvYWN0aXZhdGlvbi1jaGVjaw=='));
